@@ -17,8 +17,14 @@ app.use(
 app.get("/", (req, res) => {
   res.render("index", {
     title: "男还是女",
-    identity: "123"
+    identity: "123",
+    img_urls: ["./1", "./2"]
   });
+});
+
+app.post("/tag", (req, res) => {
+  const identity = req.query("identity");
+  const gender = req.query("gender");
 });
 
 const port = process.env.PORT || 3000;

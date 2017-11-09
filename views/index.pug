@@ -9,9 +9,9 @@ html(lang='zh-Hans')
       h1.identity= identity
       .images
         .image
-          img.left(src='.', width=200, height=200)
+          img.left(src=img_urls[0], width=200, height=200)
         .image
-          img.right(src='.', width=200, height=200)
+          img.right(src=img_urls[1], width=200, height=200)
       .forms
         form#male(action='/tag')
           input(type='hidden', name='identity', value=identity)
