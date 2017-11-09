@@ -1,0 +1,24 @@
+html(lang='zh-Hans')
+  head
+    meta(charset='utf-8')
+    title= title
+    script(src='/lib/mousetrap.js', type='application/javascript', charset='utf-8')
+    link(rel='stylesheet', href='/public/tag.css', charset='utf-8')
+  body
+    div.wrapper
+      h1.identity= identity
+      .images
+        .image
+          img.left(src='.', width=200, height=200)
+        .image
+          img.right(src='.', width=200, height=200)
+      .forms
+        form#male(action='/tag')
+          input(type='hidden', name='identity', value=identity)
+          input(type='hidden', value='male', name='gender')
+          button(type='button', onclick='document.getElementById("male").submit(); return false;') 男 👈
+        form#female(action='/tag')
+          input(type='hidden', name='identity', value=identity)
+          input(type='hidden', value='female', name='gender')
+          button(type='button', onclick='document.getElementById("female").submit(); return false;') 女 👉
+    script(src='/public/tag.js', type='application/javascript', charset='utf-8')
