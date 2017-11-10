@@ -2,11 +2,9 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const handlers = require("./handlers");
 const _ = require("lodash");
 const { logger } = require("./log");
-const { createDatabase } = require("./db");
-
-const db = createDatabase();
 
 const app = express();
 
@@ -29,26 +27,9 @@ const imageRoot = process.env.IMAGE_ROOT || path.join(__dirname, "images");
 
 logger.info("using image root: %s", imageRoot);
 
-app.get("/", (req, res) => {
-  res.render("index", {
-    title: "男还是女",
-    identity: "123",
-    img_urls: ["./1", "./2"]
-  });
-});
+app.get("/", handlers.home);
 
-app.post("/tag", (req, res) => {
-  const { identity, gender, url1, url2 } = req.body;
-  if (
-    _.isEmpty(identity) ||
-    _.isEmpty(gender) ||
-    _.isEmpty(url1) ||
-    _.isEmpty(url2)
-  ) {
-    res.status(400).send("there are some fields that were empty!");
-  }
-  res.redirect("/");
-});
+app.post("/tag", handlers.tag);
 
 const port = process.env.PORT || 3000;
 
