@@ -7,3 +7,5 @@ Mousetrap.bind(["2", "right"], function(e2) {
   document.getElementById("female").submit();
   return false;
 });
+
+console.info("深度炼丹，精确调参");

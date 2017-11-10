@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const handlers = require("./handlers");
 const _ = require("lodash");
 const { logger } = require("./log");
+const { imageRoot } = require("./image");
 const helmet = require("helmet");
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 
+app.use("/images", express.static(imageRoot));
+
 app.use(
   "/lib/mousetrap.js",
   express.static(
@@ -30,6 +33,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get("/", handlers.home);
 
 app.post("/tag", handlers.tag);
+
+app.get("/stats", handlers.stats);
 
 const port = process.env.PORT || 3000;
 

@@ -6,12 +6,14 @@ html(lang='zh-Hans')
     link(rel='stylesheet', href='/public/tag.css', charset='utf-8')
   body
     div.wrapper
-      h1.identity= identity
+      h1.title= title
+      p 如果你不确定，就原地刷新就好
+      p= datetime
       .images
         .image
-          img.left(src=img_urls[0], width=200, height=200)
+          img.left(src=img_urls[0], width=300, height=300)
         .image
-          img.right(src=img_urls[1], width=200, height=200)
+          img.right(src=img_urls[1], width=300, height=300)
       .forms
         form#male(action='/tag', method='post')
           input(type='hidden', name='identity', value=identity)

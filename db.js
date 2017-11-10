@@ -1,4 +1,5 @@
 const { logger } = require("./log");
+const _ = require("lodash");
 const { loadIdentites } = require("./image");
 
 const pgp = require("pg-promise")({
@@ -20,6 +21,58 @@ const pgp = require("pg-promise")({
   }
 });
 
+function createTables(sco) {
+  return sco.none(`
+  create table if not exists image_tags(
+    tag_id serial not null primary key,
+    created_at timestamptz not null default now(),
+    identity text not null,
+    gender text not null check(gender in ('male', 'female')),
+    url1 text not null,
+    url2 text not null
+  );
+
+  create table if not exists identities(
+    name text not null primary key
+  );`);
+}
+
+function initDB(identities, db) {
+  db
+    .connect()
+    .then(sco => {
+      let promises = [
+        sco.none(`
+        create table if not exists identities(
+          name text not null primary key
+        );`),
+        sco.none(`
+        create table if not exists image_tags(
+          tag_id serial not null primary key,
+          created_at timestamptz not null default now(),
+          identity text not null references identities(name) on delete cascade,
+          gender text not null check(gender in ('male', 'female')),
+          url1 text not null,
+          url2 text not null
+        );`)
+      ];
+      promised = _.concat(
+        promises,
+        identities.map(identity =>
+          sco.none(
+            "insert into identities (name) values ($1) on conflict (name) do nothing",
+            [identity]
+          )
+        )
+      );
+      return Promise.all(promises);
+    })
+    .then(data => {
+      logger.info("database initialized", data);
+    })
+    .catch(err => logger.warn(err));
+}
+
 function createDatabase() {
   const username = process.env.PG_USER || "postgres";
   const password = process.env.PG_PASS || "";
@@ -29,26 +82,8 @@ function createDatabase() {
   const databaseName = process.env.PG_DBNAME || "postgres";
   const connStr = `postgres://${cred}@${hostname}:${port}/${databaseName}`;
   logger.info("connecting to postgres at: %s", connStr);
-  loadIdentites();
   const db = pgp(connStr);
-  db
-    .connect()
-    .then(sco =>
-      sco.any(
-        `
-create table if not exists image_tags(
-  tag_id serial not null primary key,
-  created_at timestamptz not null default now(),
-  identity text not null,
-  gender text not null check(gender in ('male', 'female')),
-  url1 text not null,
-  url2 text not null
-);
-      `
-      )
-    )
-    .then(data => logger.info("tables created: %s", data))
-    .catch(err => logger.warn(err));
+  loadIdentites().then(identities => initDB(identities, db));
   return db;
 }
 
