@@ -52,7 +52,7 @@ async function home(req, res) {
   res.render("index", {
     title: `${name} 是男还是女？`,
     identity,
-    datetime: moment().format("llll"),
+    datetime: moment().format("h:mm:ss a"),
     img_urls: urls
   });
 }
