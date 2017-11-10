@@ -3,18 +3,35 @@ const path = require("path");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
+const winston = require("winston");
+const format = winston.format;
+
+const myFormat = format.printf(info => {
+  return `${info.timestamp} [${info.level}] : ${info.message}`;
+});
+
+const logger = winston.createLogger({
+  level: "info",
+  format: format.combine(format.splat(), format.timestamp(), myFormat),
+  transports: [new winston.transports.Console()]
+});
 
 const pgp = require("pg-promise")({
   connect(client, db, isFresh) {
     const cp = client.connectionParameters;
-    console.info("successfully connected to postgres:", cp);
+    logger.info(
+      "successfully connected to postgres: %s:%d/%s",
+      cp.host,
+      cp.port,
+      cp.database
+    );
   },
   disconnect(client, dc) {
     const cp = client.connectionParameters;
-    console.info("disconnecting from database:", cp);
+    logger.info("disconnecting from database: %s", cp);
   },
   error(err, e) {
-    console.warn("got error", err, e);
+    logger.warn("got error %s, %s", err, e);
   }
 });
 
@@ -26,7 +43,7 @@ function createDatabase() {
   const port = process.env.PG_PORT || 5432;
   const databaseName = process.env.PG_DBNAME || "postgres";
   const connStr = `postgres://${cred}@${hostname}:${port}/${databaseName}`;
-  console.info("connecting to postgres at", connStr);
+  logger.info("connecting to postgres at: %s", connStr);
   const db = pgp(connStr);
   db
     .connect()
@@ -44,8 +61,8 @@ create table if not exists image_tags(
       `
       )
     )
-    .then(data => console.info("tables created", data))
-    .catch(err => console.warn(err));
+    .then(data => logger.info("tables created: %s", data))
+    .catch(err => logger.warn(err));
   return db;
 }
 
@@ -67,6 +84,10 @@ app.use(
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+const imageRoot = process.env.IMAGE_ROOT || path.join(__dirname, "images");
+
+logger.info("using image root: %s", imageRoot);
 
 app.get("/", (req, res) => {
   res.render("index", {
@@ -91,6 +112,11 @@ app.post("/tag", (req, res) => {
 
 const port = process.env.PORT || 3000;
 
+process.on("SIGINT", () => {
+  logger.warn("process interrupted, exiting...");
+  process.exit();
+});
+
 app.listen(port, "0.0.0.0", () => {
-  console.info("app listening at", port);
+  logger.info("app listening at: %s", port);
 });
