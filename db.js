@@ -1,4 +1,6 @@
 const { logger } = require("./log");
+const { loadIdentites } = require("./image");
+
 const pgp = require("pg-promise")({
   connect(client, db, isFresh) {
     const cp = client.connectionParameters;
@@ -27,6 +29,7 @@ function createDatabase() {
   const databaseName = process.env.PG_DBNAME || "postgres";
   const connStr = `postgres://${cred}@${hostname}:${port}/${databaseName}`;
   logger.info("connecting to postgres at: %s", connStr);
+  loadIdentites();
   const db = pgp(connStr);
   db
     .connect()

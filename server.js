@@ -27,10 +27,6 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const imageRoot = process.env.IMAGE_ROOT || path.join(__dirname, "images");
-
-logger.info("using image root: %s", imageRoot);
-
 app.get("/", handlers.home);
 
 app.post("/tag", handlers.tag);
