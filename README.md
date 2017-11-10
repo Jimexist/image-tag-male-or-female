@@ -14,4 +14,4 @@ image tag male or female
 
 1. decide where you stored your images, e.g. you have `~/my_images/` and subdirectories like `~/my_images/Ziyi_Zhang/Ziyi_Zhang_image_1.jpg`
 1. cd `~/my_images/`
-1. run `docker pull -v $(pwd):/opt/images/ --link postgres:postgres --port 3000:3000 --name image-tag-male-or-female jimexist/image-tag-male-or-female:latest`
+1. run `docker run -v $(pwd):/opt/images/ --link postgres:postgres -p 3000:3000 --name image-tag-male-or-female jimexist/image-tag-male-or-female:latest`
