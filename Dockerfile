@@ -11,6 +11,11 @@ RUN yarn
 ADD . /opt/app
 
 ENV PORT=3000 \
+  PG_USER=postgres \
+  PG_PASS= \
+  PG_HOST=postgres \
+  PG_PORT=5432 \
+  PG_DBNAME=postgres \
   IMAGE_ROOT="/opt/images"
 
 EXPOSE 3000
