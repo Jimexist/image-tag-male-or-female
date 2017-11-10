@@ -10,7 +10,8 @@ RUN yarn
 
 ADD . /opt/app
 
-ENV PORT=3000 \
+ENV NODE_ENV=production \
+  PORT=3000 \
   PG_USER=postgres \
   PG_PASS= \
   PG_HOST=postgres \

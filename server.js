@@ -5,8 +5,12 @@ const bodyParser = require("body-parser");
 const handlers = require("./handlers");
 const _ = require("lodash");
 const { logger } = require("./log");
-
+const helmet = require("helmet");
 const app = express();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(helmet());
+}
 
 app.set("view engine", "pug");
 
