@@ -1,6 +1,6 @@
 {
   "name": "image-tag-male-or-female",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "server.js",
   "repository": "https://github.com/Jimexist/image-tag-male-or-female",
   "author": "Jiayu Liu <jiayu@caicloud.io>",
