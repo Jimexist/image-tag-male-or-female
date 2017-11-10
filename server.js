@@ -1,6 +1,8 @@
 const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const _ = require("lodash");
 
 const pgp = require("pg-promise")({
   connect(client, db, isFresh) {
@@ -64,6 +66,8 @@ app.use(
   )
 );
 
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.get("/", (req, res) => {
   res.render("index", {
     title: "男还是女",
@@ -73,17 +77,16 @@ app.get("/", (req, res) => {
 });
 
 app.post("/tag", (req, res) => {
-  const identity = req.query("identity");
-  const gender = req.query("gender");
-  db
-    .connect()
-    .then(sco =>
-      sco.one(
-        "insert into image_tags (identity, gender, url1, url2) values ($1, $2, $3, $4) returning tag_id",
-        [],
-        row => row.tag_id
-      )
-    );
+  const { identity, gender, url1, url2 } = req.body;
+  if (
+    _.isEmpty(identity) ||
+    _.isEmpty(gender) ||
+    _.isEmpty(url1) ||
+    _.isEmpty(url2)
+  ) {
+    res.status(400).send("there are some fields that were empty!");
+  }
+  res.redirect("/");
 });
 
 const port = process.env.PORT || 3000;

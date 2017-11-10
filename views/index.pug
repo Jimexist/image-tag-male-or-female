@@ -13,12 +13,16 @@ html(lang='zh-Hans')
         .image
           img.right(src=img_urls[1], width=200, height=200)
       .forms
-        form#male(action='/tag')
+        form#male(action='/tag', method='post')
           input(type='hidden', name='identity', value=identity)
+          input(type='hidden', name='url1', value=img_urls[0])
+          input(type='hidden', name='url2', value=img_urls[1])
           input(type='hidden', value='male', name='gender')
           button(type='button', onclick='document.getElementById("male").submit(); return false;') 男 👈
-        form#female(action='/tag')
+        form#female(action='/tag', method='post')
           input(type='hidden', name='identity', value=identity)
+          input(type='hidden', name='url1', value=img_urls[0])
+          input(type='hidden', name='url2', value=img_urls[1])
           input(type='hidden', value='female', name='gender')
           button(type='button', onclick='document.getElementById("female").submit(); return false;') 女 👉
     script(src='/public/tag.js', type='application/javascript', charset='utf-8')
