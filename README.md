@@ -15,3 +15,11 @@ image tag male or female
 1. decide where you stored your images, e.g. you have `~/my_images/` and subdirectories like `~/my_images/Ziyi_Zhang/Ziyi_Zhang_image_1.jpg`
 1. cd `~/my_images/`
 1. run `docker run -v $(pwd):/opt/images/ --link postgres:postgres -p 3000:3000 --name image-tag-male-or-female jimexist/image-tag-male-or-female:v0.2.0`
+
+## See also
+
+* [express](https://expressjs.com/) for node.js server framework
+* [pug](https://pugjs.org/) for view template
+* [pg](https://www.npmjs.com/package/pg) for node.js driver for database
+* [winston](https://github.com/winstonjs/winston/) for node.js logging
+* [postgresql](https://www.postgresql.org/) for database usage
